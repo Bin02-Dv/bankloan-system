@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Loan App</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="con">
+        <h2>Get Loan</h2>
+        <form method="post" id="getLoan" class="conn">
+            <div class="out-put" id="text-container">
+                <span id="animated-text"></span>
+            </div>
+            {% csrf_token %}
+            <div class="row">
+                <label for="">Enter Your Dependents</label>
+                <input type="number" name="dependents" id="">
+            </div>
+            <div class="row">
+                <label for="">Applicant Income</label>
+                <input type="number" name="applicant_income" id="">
+            </div>
+            <div class="row">
+                <label for="">Co-Applicant Income</label>
+                <input type="number" name="co_applicant_income" id="">
+            </div>
+            <div class="row">
+                <label for="">Loan Amount</label>
+                <input type="number" name="loan_amount" id="">
+            </div>
+            <div class="row">
+                <label for="">Loan Term</label>
+                <input type="number" name="loan_term" id="">
+            </div>
+            <div class="row">
+                <label for="">Credit History</label>
+                <input type="number" name="credit_history" id="">
+            </div>
+            <div class="row">
+                <label for="">Gender</label>
+                <select name="gender" id="">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="row">
+                <label for="">Are you Married?</label>
+                <select name="marital" id="">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="row">
+                <label for="">Are you Graduate?</label>
+                <select name="education" id="">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="row">
+                <label for="">Are you Self Employed?</label>
+                <select name="employed" id="">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="row">
+                <label for="">Your Area?</label>
+                <select name="area" id="">
+                    <option value="Rural">Rural</option>
+                    <option value="Semiurban">Semiurban</option>
+                    <option value="Urban">Urban</option>
+                </select>
+            </div>
+            <button id="submit-button">Predict</button>
+        </form>
+    </div>
+
+<script src="{% static 'js/JQ.js' %}"></script>
+<script>
+    $(document).on('submit', '#getLoan', function (e){
+        e.preventDefault();
+        var formData = new FormData(this); // Pass 'this' instead of $(this)[0]
+        $.ajax({
+            type: 'POST',
+            url: '/',
+            data: formData,
+            processData: false, // Ensure data is not processed for FormData
+            contentType: false, // Ensure proper content type for FormData
+            success: function(response) {
+                var success = response['success'];
+                const textContainer = document.getElementById('text-container');
+                const animatedText = document.getElementById('animated-text');
+                const textToAnimate = response['message'];
+                const animationDelay = 50;
+                let letterIndex = 0;
+
+                function animateText() {
+                    if (letterIndex < textToAnimate.length) {
+                        animatedText.innerHTML += textToAnimate.charAt(letterIndex);
+                        letterIndex++;
+                        setTimeout(animateText, animationDelay);
+                    }
+                }
+
+                // Reset the text content before animation
+                animatedText.innerHTML = "";
+
+                if (success) {
+                    // Add success class and remove failed class
+                    textContainer.classList.remove("failed");
+                    textContainer.classList.add("success");
+                } else {
+                    // Add failed class and remove success class
+                    textContainer.classList.remove("success");
+                    textContainer.classList.add("failed");
+                }
+
+                // Scroll to the top of the container with class "con"
+                const con = document.querySelector('.conn');
+                if (con) {
+                    con.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                // Start the text animation
+                animateText();
+            }
+        });
+    });
+</script>
+</body>
+</html>
