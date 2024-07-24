@@ -70,3 +70,6 @@ def get_loan(request):
             model_response = 'Sorry! Your Loan has been Rejected!!'
             return JsonResponse({'success': False, 'message': model_response})
     return render(request, 'index.html')
+
+def dashboard(request):
+    return render(request, "dashboard.html")
