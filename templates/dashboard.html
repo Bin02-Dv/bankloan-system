@@ -11,10 +11,8 @@
     <div class="sidebar">
         <h2>Bank Loan Dashboard</h2>
         <ul>
-            <li><a href="#overview">Overview</a></li>
             <li><a href="/">Loan Applications</a></li>
-            <li><a href="#predictions">Predictions</a></li>
-            <li><a href="#settings">Settings</a></li>
+            <li><a href="/signout" style="color: red;">Signout</a></li>
         </ul>
     </div>
     <div class="main-content">
@@ -26,19 +24,15 @@
             <div class="stats">
                 <div class="stat-box">
                     <h3>Total Applications</h3>
-                    <p>120</p>
+                    <p>{{all}}</p>
                 </div>
                 <div class="stat-box">
                     <h3>Approved Loans</h3>
-                    <p>80</p>
-                </div>
-                <div class="stat-box">
-                    <h3>Pending Applications</h3>
-                    <p>30</p>
+                    <p>{{approved}}</p>
                 </div>
                 <div class="stat-box">
                     <h3>Rejected Loans</h3>
-                    <p>10</p>
+                    <p>{{rejected}}</p>
                 </div>
             </div>
         </section>
@@ -50,28 +44,21 @@
                         <th>Applicant Name</th>
                         <th>Loan Amount</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        {% comment %} <th>Action</th> {% endcomment %}
                     </tr>
                 </thead>
                 <tbody>
+                    {% for app in apps %}
                     <tr>
-                        <td>John Doe</td>
-                        <td>$5000</td>
-                        <td>Pending</td>
-                        <td><button>Review</button></td>
+                        <td>{{app.name}}</td>
+                        <td>N{{app.loan_amount}}</td>
+                        {% if app.loan_status == 'Approved' %}
+                        <td style="color: green;">{{app.loan_status}}</td>
+                        {% else %}
+                        <td style="color: red;">{{app.loan_status}}</td>
+                        {% endif %}
                     </tr>
-                    <tr>
-                        <td>Jane Smith</td>
-                        <td>$10000</td>
-                        <td>Approved</td>
-                        <td><button>View</button></td>
-                    </tr>
-                    <tr>
-                        <td>Mike Johnson</td>
-                        <td>$7000</td>
-                        <td>Rejected</td>
-                        <td><button>View</button></td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </section>

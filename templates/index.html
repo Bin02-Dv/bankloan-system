@@ -16,6 +16,10 @@
             </div>
             {% csrf_token %}
             <div class="row">
+                <label for="">Enter your Name</label>
+                <input type="text" name="name" id="">
+            </div>
+            <div class="row">
                 <label for="">Enter Your Dependents</label>
                 <input type="number" name="dependents" id="">
             </div>
@@ -76,7 +80,6 @@
                 </select>
             </div>
             <button id="submit-button">Predict</button>
-            <a href="/dashboard">Go to Dashboard</a>
         </form>
     </div>
 
