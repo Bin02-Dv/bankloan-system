@@ -27,8 +27,31 @@ def signin(request):
             return JsonResponse({'success': False, 'message': 'Invalid Signin Credentials!!'})
     return render(request, "signin.html")
 
+def signup(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({
+                "success": False, "message": "Username already exist!!"
+            })
+        elif confirm_password != password:
+            return JsonResponse({
+                "success": False, "message": "password and confirm password missed match!!"
+            })
+        else:
+            User.objects.create_user(username=username, password=password)
+            return JsonResponse({
+                "success": True, "message": "Account has been created.."
+            })
+    return render(request, "signup.html")
+
 def get_loan(request):
     if request.method == 'POST':
+        
+        current_user = request.user
         
         dependents = int(request.POST["dependents"])
         applicant_income = float(request.POST["applicant_income"])
@@ -61,7 +84,7 @@ def get_loan(request):
         area_urban = 1 if area == 'Urban' else 0
 
 
-        url = 'http://192.168.0.163:8000/bankloanApi/api/send'
+        url = 'https://9eb0-34-85-184-69.ngrok-free.app/predict'
 
         data = {
             "Dependants": dependents,
@@ -88,7 +111,7 @@ def get_loan(request):
         status = response_data.get("status")
         if status ==  True:
             new_loan = Loan.objects.create(
-                name=name, loan_amount=loan_amount, loan_status='Approved'
+                name=name, loan_amount=loan_amount, loan_status='Approved', user=current_user
             )
             new_loan.save()
             model_response = 'Congratulations! Your Loan has been Approved..'
@@ -108,10 +131,14 @@ def dashboard(request):
     approved = Loan.objects.filter(loan_status='Approved').count()
     rejected = Loan.objects.filter(loan_status='Rejected!!').count()
     apps = applications.count()
+    current_user = request.user
+    user_applications = Loan.objects.filter(user=current_user)
     context = {
         "apps": applications,
         "all": apps,
         "approved": approved,
         "rejected": rejected,
+        "current_user": current_user,
+        "user_applications": user_applications,
     }
     return render(request, "dashboard.html", context)

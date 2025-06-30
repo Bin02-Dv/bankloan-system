@@ -19,6 +19,7 @@
         <header>
             <h1>Bank Loan Eligibility System</h1>
         </header>
+        {% if current_user.is_superuser %}
         <section id="overview">
             <h2>Overview</h2>
             <div class="stats">
@@ -36,6 +37,7 @@
                 </div>
             </div>
         </section>
+        {% endif %}
         <section id="applications">
             <h2>Loan Applications</h2>
             <table>
@@ -47,6 +49,7 @@
                         {% comment %} <th>Action</th> {% endcomment %}
                     </tr>
                 </thead>
+                {% if current_user.is_superuser %}
                 <tbody>
                     {% for app in apps %}
                     <tr>
@@ -60,6 +63,27 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                {% else %}
+                <tbody>
+                    {% if user_applications %}
+                    {% for app in user_applications %}
+                    <tr>
+                        <td>{{app.name}}</td>
+                        <td>N{{app.loan_amount}}</td>
+                        {% if app.loan_status == 'Approved' %}
+                        <td style="color: green;">{{app.loan_status}}</td>
+                        {% else %}
+                        <td style="color: red;">{{app.loan_status}}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td>No data yet!<td>
+                    <tr>
+                    {% endif %}    
+                </tbody>
+                {% endif %}
             </table>
         </section>
         {% comment %} <section id="predictions">

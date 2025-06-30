@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp</title>
+    <link rel="stylesheet" href="{% static 'css/signin-css.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="signin-form">
+            <h2>Create an account</h2>
+            <form method="post" id="signup">
+                <div class="out-put" id="text-container">
+                    <span id="animated-text"></span>
+                </div>
+                {% csrf_token %}
+                <div class="row">
+                    <input type="text" name="username" id="username" placeholder="Enter Your Username">
+                </div>
+                <div class="row">
+                    <input type="password" name="password" id="password" placeholder="Enter Your Password">
+                </div>
+                <div class="row">
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Your Password">
+                </div>
+                <button>Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="{% static 'js/JQ.js' %}"></script>
+<script>
+    $(document).on('submit', '#signup', function (e){
+        e.preventDefault();
+        var formData = new FormData(this); // Pass 'this' instead of $(this)[0]
+        $.ajax({
+            type: 'POST',
+            url: '/signup/',
+            data: formData,
+            processData: false, // Ensure data is not processed for FormData
+            contentType: false, // Ensure proper content type for FormData
+            success: function(response) {
+                var success = response['success'];
+                const textContainer = document.getElementById('text-container');
+                var animatedText = document.getElementById('animated-text');
+
+                if (success) {
+                    // Add success class and remove failed class
+                    textContainer.classList.remove("failed");
+                    textContainer.classList.add("success");
+                    animatedText.innerHTML = response['message'];
+                    window.location.href = '/signin/'
+                } else {
+                    // Add failed class and remove success class
+                    textContainer.classList.remove("success");
+                    textContainer.classList.add("failed");
+                    animatedText.innerHTML = response['message'];
+                }
+
+                // Scroll to the top of the container with class "con"
+                const con = document.querySelector('.conn');
+                if (con) {
+                    con.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                // Start the text animation
+                animateText();
+            }
+        });
+    });
+</script>
+</body>
+</html>
