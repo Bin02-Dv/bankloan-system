@@ -84,7 +84,7 @@ def get_loan(request):
         area_urban = 1 if area == 'Urban' else 0
 
 
-        url = 'https://9eb0-34-85-184-69.ngrok-free.app/predict'
+        url = 'https://65b0-34-141-197-22.ngrok-free.app/predict'
 
         data = {
             "Dependants": dependents,
@@ -123,6 +123,8 @@ def get_loan(request):
             new_loan.save()
             model_response = 'Sorry! Your Loan has been Rejected!!'
             return JsonResponse({'success': False, 'message': model_response})
+        else:
+            return JsonResponse({'success': False, 'message': "Sorry an error occur"})
     return render(request, 'index.html')
 
 @login_required(login_url='/signin')

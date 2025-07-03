@@ -98,7 +98,7 @@
                 var success = response['success'];
                 const textContainer = document.getElementById('text-container');
                 const animatedText = document.getElementById('animated-text');
-                const textToAnimate = response['message'];
+                const textToAnimate = response['message'] || 'No response';
                 const animationDelay = 50;
                 let letterIndex = 0;
 
